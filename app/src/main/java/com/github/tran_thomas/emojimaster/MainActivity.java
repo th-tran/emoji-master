@@ -37,11 +37,6 @@ import java.io.OutputStreamWriter;
  * A fully self-developed project made by a guy who
  * loves computers way too much. <3
  *
- * DISCLAIMER: All code within this project is under
- * copyright. As such, it cannot be copied, modified
- * or distributed in any way without my explicit
- * permission.
- *
  * Author: Thomas Tran
  ***************************************************/
 public class MainActivity extends AppCompatActivity {
@@ -64,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Static variables used by fragments to reference this activity
      */
+    public static MainActivity mActivity;
     public static int numRecent = 0;
 
     /**
@@ -76,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         // Initializing internal files and static variables upon startup
         initializeRecent();
         countRecentEntries();
+        mActivity = this;
 
         // Apply the proper app theme based on the current preference setting
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
