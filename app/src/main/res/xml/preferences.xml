@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/interface_header"
+        android:key="pref_key_interface_settings">
+        <SwitchPreference
+            android:key="pref_key_gridview"
+            android:title="@string/pref_gridview"
+            android:summary="@string/pref_gridview_summ"
+            android:defaultValue="false" />
+        <SwitchPreference
+            android:key="pref_key_center"
+            android:title="@string/pref_center"
+            android:summary="@string/pref_center_summ"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/theme_header"
+        android:key="pref_key_theme_settings">
+        <SwitchPreference
+            android:key="pref_key_background_dark"
+            android:title="@string/pref_background_dark"
+            android:summary="@string/pref_background_dark_summ"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/qol_header"
+        android:key="pref_key_qol_settings" >
+        <SwitchPreference
+            android:key="pref_key_confirmation"
+            android:title="@string/pref_confirmation"
+            android:summary="@string/pref_confirmation_summ"
+            android:defaultValue="false" />
+        <SwitchPreference
+            android:key="pref_key_recent"
+            android:title="@string/pref_recent"
+            android:summary="@string/pref_recent_summ"
+            android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/data_header"
+        android:key="pref_key_data_settings">
+        <Preference
+            android:key="pref_key_recent_clear"
+            android:title="@string/pref_recent_clear"
+            android:summary="@string/pref_recent_clear_summ" />
+        <Preference
+            android:key="pref_key_custom_clear"
+            android:title="@string/pref_custom_clear"
+            android:summary="@string/pref_custom_clear_summ" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/about_header"
+        android:key="pref_key_about_settings">
+        <Preference
+            android:key="pref_key_version"
+            android:title="@string/pref_version"
+            android:summary="@string/pref_version_summ" />
+        <Preference
+            android:key="pref_key_send_feedback"
+            android:title="@string/pref_send_feedback"
+            android:summary="@string/pref_send_feedback_summ" />
+    </PreferenceCategory>
+</PreferenceScreen>
