@@ -1,8 +1,6 @@
 **************************************************
 Thomas Tran                    
 ttran14@uoguelph.ca
-
-Last modified: January 13, 2018
 **************************************************
 
 *************************************************************************
@@ -43,6 +41,10 @@ to show a list of your most recently used emoticons on the home tab!
 
 ***************************************************************************************
 TODO
+
+(I need to focus on school at the moment, so it's unlikely that I will continue to work
+ on this project at the time. However, I plan to finish this project after this semester
+ when I have more free time!)
 
 - Enable developer/debugging settings by tapping the version code 7 times
 - Add additional app themes
