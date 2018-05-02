@@ -21,22 +21,21 @@
                 "Congrats! You are now an\n"
                 "emoji mastah!\n\n"
                 "(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧\n\n"
-                "Find the emoticon you want to copy, "
-                "then tap on it. Bam! It's in your clipboard, "
+                "Find the emoticon you want to copy,"
+                "then tap on it. Bam! It's in your clipboard,"
                 "ready to argue/chat/troll with. :D"</string>
     <string name="no_recent_message">
                 "You have no recently\n"
                 "used emoticons.\n\n"
                 "(・_・;)\n\n"
-                "Tap on any emoticon to copy it, "
-                "and it will show up on this page. "
-                "Promise. \u003c3"</string>
+                "Tap on any emoticon to copy it,"
+                "and it will show up on this page. All of your favourites in one place!"</string>
     <string name="no_custom_message">
                 "You seem to have no\n"
                 "custom emoticons.\n\n"
                 "（╯°□°）╯︵(\\ .o.)\\\n\n"
-                "To add some, press the + Button in the "
-                "bottom right, or long-press any entry on "
+                "To add some, press the + Button in the"
+                "bottom right, or long-press any entry on"
                 "another page and add to custom!"</string>
     <string name="interface_header">Interface</string>
     <string name="pref_gridview">Use Grid View</string>

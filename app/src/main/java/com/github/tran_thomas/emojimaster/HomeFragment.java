@@ -121,7 +121,7 @@ public class HomeFragment extends Fragment {
                 editedMessage = new SpannableString(message);
                 editedMessage.setSpan(new RelativeSizeSpan(1.2f), 0, 37, 0);
                 editedMessage.setSpan(new RelativeSizeSpan(2.5f), 39, 46, 0);
-                editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 49, 128, 0);
+                editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 49, 151, 0);
                 textView.setText(editedMessage);
                 textView.setVisibility(View.VISIBLE);
             } else { // Display recently used emoticons
@@ -157,7 +157,7 @@ public class HomeFragment extends Fragment {
             editedMessage = new SpannableString(message);
             editedMessage.setSpan(new RelativeSizeSpan(1.2f), 0, 39, 0);
             editedMessage.setSpan(new RelativeSizeSpan(2.5f), 41, 52, 0);
-            editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 55, 174, 0);
+            editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 55, 172, 0);
             textView.setText(editedMessage);
             textView.setVisibility(View.VISIBLE);
         }

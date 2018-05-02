@@ -78,7 +78,7 @@ public class CustomFragment extends Fragment{
         editedMessage = new SpannableString(message);
         editedMessage.setSpan(new RelativeSizeSpan(1.2f), 0, 38, 0);
         editedMessage.setSpan(new RelativeSizeSpan(1.8f), 40, 57, 0);
-        editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 60, 173, 0);
+        editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 60, 171, 0);
         tv.setText(editedMessage);
         // Show the message if there are no custom emoticons
         if (fileIsEmpty("custom.txt")){ // No custom emoticons
