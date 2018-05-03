@@ -27,7 +27,6 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +50,7 @@ public class CustomFragment extends Fragment{
     private SpannableString editedMessage;
     private String selectedText;
     private int selectedTextPosn;
-    private GridView gridView;
+    private AutoGridView gridView;
     private TextView tv;
     private View rootView;
 
@@ -83,8 +82,10 @@ public class CustomFragment extends Fragment{
         // Show the message if there are no custom emoticons
         if (fileIsEmpty("custom.txt")){ // No custom emoticons
             tv.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.GONE);
         } else { // There are custom emoticons
             tv.setVisibility(View.GONE);
+            gridView.setVisibility(View.VISIBLE);
             readFile("custom.txt");
             updateGrid(rootView);
         }
@@ -99,23 +100,27 @@ public class CustomFragment extends Fragment{
                 readFile("custom.txt");
                 if (fileIsEmpty("custom.txt")){
                     tv.setVisibility(View.VISIBLE);
+                    gridView.setVisibility(View.GONE);
                 } else{
                     tv.setVisibility(View.GONE);
+                    gridView.setVisibility(View.VISIBLE);
                 }
                 // Check if the preference for grid view is enabled
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
-                if (gridviewPref){ // Grid view enabled
-                    int orientation = getResources().getConfiguration().orientation;
-                    if (orientation == Configuration.ORIENTATION_PORTRAIT){ // Portrait: set columns to 2
-                        gridView.setNumColumns(2);
-                    } else { // Landscape: set columns to 3
-                        gridView.setNumColumns(3);
+                if (getActivity() != null){
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
+                    if (gridviewPref){ // Grid view enabled
+                        int orientation = getResources().getConfiguration().orientation;
+                        if (orientation == Configuration.ORIENTATION_PORTRAIT){ // Portrait: set columns to 2
+                            gridView.setNumColumns(2);
+                        } else { // Landscape: set columns to 3
+                            gridView.setNumColumns(3);
+                        }
+                    } else { // Grid view disabled
+                        gridView.setNumColumns(1);
                     }
-                } else { // Grid view disabled
-                    gridView.setNumColumns(1);
+                    updateGrid(rootView);
                 }
-                updateGrid(rootView);
             }
         });
         // Set the listener to update CustomFragment when exiting SettingActivity
@@ -123,7 +128,7 @@ public class CustomFragment extends Fragment{
             @Override
             public void applyNewSettings() {
                 // Check if the preference for grid view is enabled
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
                 if (gridviewPref){ // Grid view enabled
                     int orientation = getResources().getConfiguration().orientation;
@@ -137,9 +142,11 @@ public class CustomFragment extends Fragment{
                 }
                 if (fileIsEmpty("custom.txt")){
                     tv.setVisibility(View.VISIBLE);
+                    gridView.setVisibility(View.GONE);
                     data.clear();
                 } else{
                     tv.setVisibility(View.GONE);
+                    gridView.setVisibility(View.VISIBLE);
                     readFile("custom.txt");
                 }
                 updateGrid(rootView);
@@ -177,7 +184,7 @@ public class CustomFragment extends Fragment{
                 openEditPrompt();
                 break;
             case R.id.delete:
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 Boolean disableConfirmPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CONFIRMATION, false);
                 if (disableConfirmPref) {
                     deleteFromFile("custom.txt");
@@ -186,8 +193,10 @@ public class CustomFragment extends Fragment{
                     TextView tv = (TextView) rootView.findViewById(R.id.custom_textview);
                     if (fileIsEmpty("custom.txt")){
                         tv.setVisibility(View.VISIBLE);
+                        gridView.setVisibility(View.GONE);
                     } else{
                         tv.setVisibility(View.GONE);
+                        gridView.setVisibility(View.VISIBLE);
                     }
                 } else {
                     openDeletePrompt();
@@ -204,7 +213,7 @@ public class CustomFragment extends Fragment{
      * Called when the fragment is initialized.
      */
     private void applyCurrentSettings() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
         if (gridviewPref){
             int orientation = getResources().getConfiguration().orientation;
@@ -222,10 +231,10 @@ public class CustomFragment extends Fragment{
      * Opens the prompt to edit the selected text from the custom list.
      */
     private void openEditPrompt() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View promptView = inflater.inflate(R.layout.edit_prompt, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setView(promptView);
 
         alertDialogBuilder.setPositiveButton("Add",
@@ -258,12 +267,12 @@ public class CustomFragment extends Fragment{
      * Opens the prompt to delete the selected text from the custom list.
      */
     private void openDeletePrompt() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View promptView = inflater.inflate(R.layout.delete_prompt, null);
         TextView tv = (TextView) promptView.findViewById(R.id.delete_prompt_subheader);
         tv.setText(selectedText);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setView(promptView);
 
         alertDialogBuilder.setPositiveButton("Ok",
@@ -276,8 +285,10 @@ public class CustomFragment extends Fragment{
                         TextView tv = (TextView) rootView.findViewById(R.id.custom_textview);
                         if (fileIsEmpty("custom.txt")){
                             tv.setVisibility(View.VISIBLE);
+                            gridView.setVisibility(View.GONE);
                         } else{
                             tv.setVisibility(View.GONE);
+                            gridView.setVisibility(View.VISIBLE);
                         }
                     }
                 });
@@ -301,7 +312,7 @@ public class CustomFragment extends Fragment{
      */
     private boolean fileIsEmpty(String file) {
         try {
-            InputStream inputStream = getContext().openFileInput(file);
+            InputStream inputStream = getActivity().openFileInput(file);
             if (inputStream != null){
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -322,19 +333,21 @@ public class CustomFragment extends Fragment{
         String originalText = textToAdd;
         String ls = System.getProperty("line.separator");
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(getContext().openFileOutput("custom.txt", Context.MODE_APPEND));
+            OutputStreamWriter writer = new OutputStreamWriter(getActivity().openFileOutput("custom.txt", Context.MODE_APPEND));
             textToAdd = textToAdd.replaceAll("[\r\n]+", "ø");
             writer.write(textToAdd + ls);
             writer.close();
-            Toast toast = Toast.makeText(getContext(), originalText + "\nadded to Custom!", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getActivity(), originalText + "\nadded to Custom!", Toast.LENGTH_SHORT);
             TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
             if (tv != null) {
                 tv.setGravity(Gravity.CENTER);
             }
             toast.show();
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            if (getActivity() != null){
+                Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     }
 
@@ -346,7 +359,7 @@ public class CustomFragment extends Fragment{
         String line;
         String ls = System.getProperty("line.separator");
         try {
-            InputStream inputStream = getContext().openFileInput(file);
+            InputStream inputStream = getActivity().openFileInput(file);
             if (inputStream != null){
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -358,8 +371,10 @@ public class CustomFragment extends Fragment{
                 inputStream.close();
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            if (getActivity() != null){
+                Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     }
 
@@ -372,8 +387,8 @@ public class CustomFragment extends Fragment{
         String line;
         String ls = System.getProperty("line.separator");
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(getContext().openFileOutput("temp.txt", Context.MODE_PRIVATE));
-            InputStream inputStream = getContext().openFileInput(file);
+            OutputStreamWriter writer = new OutputStreamWriter(getActivity().openFileOutput("temp.txt", Context.MODE_PRIVATE));
+            InputStream inputStream = getActivity().openFileInput(file);
             if (inputStream != null){
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -391,8 +406,8 @@ public class CustomFragment extends Fragment{
                 reader.close();
             }
             writer.close();
-            OutputStreamWriter newWriter = new OutputStreamWriter(getContext().openFileOutput("custom.txt", Context.MODE_PRIVATE));
-            InputStream newInputStream = getContext().openFileInput("temp.txt");
+            OutputStreamWriter newWriter = new OutputStreamWriter(getActivity().openFileOutput("custom.txt", Context.MODE_PRIVATE));
+            InputStream newInputStream = getActivity().openFileInput("temp.txt");
             if (newInputStream != null){
                 InputStreamReader newInputStreamReader = new InputStreamReader(newInputStream);
                 BufferedReader newReader = new BufferedReader(newInputStreamReader);
@@ -405,8 +420,10 @@ public class CustomFragment extends Fragment{
             Snackbar snackbar = Snackbar.make(getView(),"Entry edited!", Snackbar.LENGTH_SHORT);
             snackbar.show();
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            if (getActivity() != null){
+                Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     }
 
@@ -418,8 +435,8 @@ public class CustomFragment extends Fragment{
         String line;
         String ls = System.getProperty("line.separator");
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(getContext().openFileOutput("temp.txt", Context.MODE_PRIVATE));
-            InputStream inputStream = getContext().openFileInput(file);
+            OutputStreamWriter writer = new OutputStreamWriter(getActivity().openFileOutput("temp.txt", Context.MODE_PRIVATE));
+            InputStream inputStream = getActivity().openFileInput(file);
             if (inputStream != null){
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -435,8 +452,8 @@ public class CustomFragment extends Fragment{
                 reader.close();
             }
             writer.close();
-            OutputStreamWriter newWriter = new OutputStreamWriter(getContext().openFileOutput("custom.txt", Context.MODE_PRIVATE));
-            InputStream newInputStream = getContext().openFileInput("temp.txt");
+            OutputStreamWriter newWriter = new OutputStreamWriter(getActivity().openFileOutput("custom.txt", Context.MODE_PRIVATE));
+            InputStream newInputStream = getActivity().openFileInput("temp.txt");
             if (newInputStream != null){
                 InputStreamReader newInputStreamReader = new InputStreamReader(newInputStream);
                 BufferedReader newReader = new BufferedReader(newInputStreamReader);
@@ -449,8 +466,10 @@ public class CustomFragment extends Fragment{
             Snackbar snackbar = Snackbar.make(getView(),"Entry deleted!", Snackbar.LENGTH_SHORT);
             snackbar.show();
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            if (getActivity() != null){
+                Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     }
 
@@ -459,13 +478,13 @@ public class CustomFragment extends Fragment{
      * @param rootView The view containing the grid view
      */
     private void createGrid(View rootView) {
-        gridView = (GridView) rootView.findViewById(R.id.grid_custom);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        gridView = (AutoGridView) rootView.findViewById(R.id.grid_custom);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean bgDarkPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_BG_DARK, false);
         if (bgDarkPref){
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item, data);
         } else {
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item_light, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item_light, data);
         }
         gridView.setAdapter(gridAdapter);
     }
@@ -476,7 +495,7 @@ public class CustomFragment extends Fragment{
      * @param rootView The view containing the grid view
      */
     private void updateGrid(View rootView) {
-        gridView = (GridView) rootView.findViewById(R.id.grid_custom);
+        gridView = (AutoGridView) rootView.findViewById(R.id.grid_custom);
         ArrayAdapter adapter = ((ArrayAdapter)gridView.getAdapter());
         adapter.notifyDataSetChanged();
     }
@@ -496,7 +515,7 @@ public class CustomFragment extends Fragment{
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             ViewHolder mainViewHolder = null;
             if (convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(getContext());
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
                 convertView = inflater.inflate(layout, parent, false);
                 ViewHolder viewHolder = new ViewHolder();
                 // Get the view's button
@@ -509,13 +528,13 @@ public class CustomFragment extends Fragment{
                         // Get the button text
                         String toCopy = button.getText().toString();
                         // Copy the text to the clipboard
-                        setClipboard(getContext(), toCopy);
+                        setClipboard(getActivity(), toCopy);
                         // Update the list of recently used emoticons
                         if (MainActivity.getRecentUpdateListener() != null){
                             MainActivity.getRecentUpdateListener().update(toCopy);
                         }
                         // Display a toast to the user to indicate the item that was copied
-                        Toast toast = Toast.makeText(getContext(), button.getText() +
+                        Toast toast = Toast.makeText(getActivity(), button.getText() +
                                 " \nhas been copied!", Toast.LENGTH_SHORT);
                         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                         if (tv != null) {
@@ -528,7 +547,7 @@ public class CustomFragment extends Fragment{
             }
             mainViewHolder = (ViewHolder) convertView.getTag();
             // Check if the preference for centering emoticons is enabled
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Boolean centerPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CENTER, false);
             if (centerPref){ // Center pref enabled
                 mainViewHolder.button.setGravity(Gravity.CENTER); // Center the text

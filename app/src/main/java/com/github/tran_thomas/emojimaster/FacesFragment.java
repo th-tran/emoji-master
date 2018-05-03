@@ -18,7 +18,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +36,7 @@ public class FacesFragment extends Fragment {
     private GridAdapter gridAdapter;
     private String[] dataToAdd;
     private String selectedText;
-    private GridView gridView;
+    private AutoGridView gridView;
     private View rootView;
 
     /**
@@ -178,7 +177,7 @@ public class FacesFragment extends Fragment {
      * @param rootView The view containing the grid view
      */
     private void createGrid(View rootView) {
-        gridView = (GridView) rootView.findViewById(R.id.grid_faces);
+        gridView = (AutoGridView) rootView.findViewById(R.id.grid_faces);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         Boolean bgDarkPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_BG_DARK, false);
         if (bgDarkPref){
@@ -195,7 +194,7 @@ public class FacesFragment extends Fragment {
      * @param rootView The view containing the grid view
      */
     private void updateGrid(View rootView) {
-        gridView = (GridView) rootView.findViewById(R.id.grid_faces);
+        gridView = (AutoGridView) rootView.findViewById(R.id.grid_faces);
         ArrayAdapter adapter = ((ArrayAdapter)gridView.getAdapter());
         adapter.notifyDataSetChanged();
     }

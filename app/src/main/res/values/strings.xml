@@ -61,7 +61,7 @@
     <string name="pref_custom_clear_summ">Really? ಠ_ಠ</string>
     <string name="about_header">About</string>
     <string name="pref_version">Emoji Master</string>
-    <string name="pref_version_summ">v2018.01.02.1</string>
+    <string name="pref_version_summ">v2018.05.03.1</string>
     <string name="pref_send_feedback">Send Feedback</string>
     <string name="pref_send_feedback_summ">Email developer for feedback and questions!</string>
 </resources>

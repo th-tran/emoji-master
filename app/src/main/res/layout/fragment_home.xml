@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_layout"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context="com.github.tran_thomas.emojimaster.MainActivity">
 
     <Spinner
@@ -15,10 +15,10 @@
         android:spinnerMode="dropdown"
         android:padding="10dp"/>
 
-    <GridView
+    <com.github.tran_thomas.emojimaster.AutoGridView
         android:id="@+id/grid_recent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:numColumns="@integer/grid_columns"
         android:gravity="center"
         android:scrollbarStyle="outsideInset"
@@ -27,8 +27,8 @@
 
     <TextView
         android:id="@+id/home_textview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginBottom="40dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"

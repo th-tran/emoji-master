@@ -1,6 +1,5 @@
 package com.github.tran_thomas.emojimaster;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,10 +33,11 @@ import java.io.OutputStreamWriter;
 
 
 /***************************************************
- * A fully self-developed project made by a guy who
- * loves computers way too much. <3
+ * One of my favourite hobby projects!
+ * Fully self-developed :)
  *
  * Author: Thomas Tran
+ * Last updated: May 3, 2018
  ***************************************************/
 public class MainActivity extends AppCompatActivity {
 

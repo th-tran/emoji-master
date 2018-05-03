@@ -193,14 +193,16 @@ public class SettingsFragment extends PreferenceFragment
      */
     private void composeEmail() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto","doggostone@gmail.com", null));
+                "mailto","a.lone.boar@gmail.com", null));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Emoji Master Feedback");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "");
         try {
             startActivity(emailIntent);
         } catch (ActivityNotFoundException e) {
-            Snackbar snackbar = Snackbar.make(getView(), "No email app is available.", Snackbar.LENGTH_SHORT);
-            snackbar.show();
+            if (getView() != null){
+                Snackbar snackbar = Snackbar.make(getView(), "No email app is available.", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
         }
     }
 }

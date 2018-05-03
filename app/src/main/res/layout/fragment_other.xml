@@ -14,10 +14,10 @@
         android:spinnerMode="dropdown"
         android:padding="10dp" />
 
-    <GridView
+    <com.github.tran_thomas.emojimaster.AutoGridView
         android:id="@+id/grid_other"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:numColumns="@integer/grid_columns"
         android:gravity="center"
         android:scrollbarStyle="outsideOverlay"

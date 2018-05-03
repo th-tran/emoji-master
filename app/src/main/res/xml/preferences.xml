@@ -54,6 +54,7 @@
         android:key="pref_key_about_settings">
         <Preference
             android:key="pref_key_version"
+            android:icon="@mipmap/ic_launcher"
             android:title="@string/pref_version"
             android:summary="@string/pref_version_summ" />
         <Preference

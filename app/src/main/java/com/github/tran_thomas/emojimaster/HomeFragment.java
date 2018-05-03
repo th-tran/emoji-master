@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +48,7 @@ public class HomeFragment extends Fragment {
     private String[] label;
     private String selectedText;
     private View rootView;
-    private GridView gridView;
+    private AutoGridView gridView;
     private TextView textView;
 
     /**
@@ -124,6 +123,7 @@ public class HomeFragment extends Fragment {
                 editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 49, 151, 0);
                 textView.setText(editedMessage);
                 textView.setVisibility(View.VISIBLE);
+                gridView.setVisibility(View.GONE);
             } else { // Display recently used emoticons
                 spinner.setVisibility(View.VISIBLE);
                 // Update the grid adapter with new data
@@ -145,6 +145,7 @@ public class HomeFragment extends Fragment {
                 updateGrid(rootView);
                 // Remove the message
                 textView.setVisibility(View.GONE);
+                gridView.setVisibility(View.VISIBLE);
             }
         } else { // Recently used emoticons disabled
             // Clear the grid adapter's data and update the display
@@ -160,6 +161,7 @@ public class HomeFragment extends Fragment {
             editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 55, 172, 0);
             textView.setText(editedMessage);
             textView.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.GONE);
         }
     }
 
@@ -168,7 +170,7 @@ public class HomeFragment extends Fragment {
      * @param rootView The view containing the grid view
      */
     private void createGrid(View rootView) {
-        gridView = (GridView) rootView.findViewById(R.id.grid_recent);
+        gridView = (AutoGridView) rootView.findViewById(R.id.grid_recent);
         // Check if the preference for dark theme is enabled
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         Boolean bgDarkPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_BG_DARK, false);
@@ -187,7 +189,7 @@ public class HomeFragment extends Fragment {
      * @param rootView The view containing the grid view
      */
     private void updateGrid(View rootView) {
-        gridView = (GridView) rootView.findViewById(R.id.grid_recent);
+        gridView = (AutoGridView) rootView.findViewById(R.id.grid_recent);
         ArrayAdapter adapter = ((ArrayAdapter)gridView.getAdapter());
         adapter.notifyDataSetChanged();
     }
@@ -230,8 +232,10 @@ public class HomeFragment extends Fragment {
             // Update the number of recently used emoticons
             MainActivity.numRecent++;
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            if (getActivity() != null){
+                Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     }
 
@@ -267,8 +271,10 @@ public class HomeFragment extends Fragment {
                 }
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            if (getActivity() != null){
+                Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     }
 
@@ -287,8 +293,10 @@ public class HomeFragment extends Fragment {
             writer.close();
             MainActivity.numRecent = 12;
         } catch (Exception e) {
-            Toast.makeText(getContext(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
-                    .show();
+            if (getActivity() != null){
+                Toast.makeText(getActivity(), "Exception: "+e.toString(), Toast.LENGTH_LONG)
+                        .show();
+            }
         }
     }
 
