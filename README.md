@@ -39,16 +39,14 @@ to show a list of your most recently used emoticons on the home tab!
 - Ability to clear all recently used and/or custom emoticons
 ********************************************************************
 
-***************************************************************************************
+*********************************************************************************************
 TODO
 
-(I need to focus on school at the moment, so it's unlikely that I will continue to work
- on this project at the time. However, I plan to finish this project after this semester
- when I have more free time!)
+(I am currently in the process of publishing this app! It should be on Google Play very soon)
 
 - Enable developer/debugging settings by tapping the version code 7 times
 - Add additional app themes
 - Implement notification support
 - Prepare the app for release (i.e. create promotional material, app icon, sign the app)
 - Release the app to the Google Play store! :D
-****************************************************************************************
+***********************************************************************************************
