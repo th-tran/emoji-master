@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -42,10 +43,7 @@ public class HomeFragment extends Fragment {
     // Local variables
     private ArrayList<String> data = new ArrayList<>();
     private GridAdapter gridAdapter;
-    private String message;
-    private SpannableString editedMessage;
     private Spinner spinner;
-    private String[] label;
     private String selectedText;
     private View rootView;
     private AutoGridView gridView;
@@ -69,8 +67,8 @@ public class HomeFragment extends Fragment {
         // list is recently used emoticons.
         // TODO: Find a better way to do this
         spinner = (Spinner) rootView.findViewById(R.id.faces_spinner);
-        label = new String[]{"Recently used"};
-        ArrayAdapter<String> optionsAdapter = new ArrayAdapter<>(getContext(),
+        String[] label = new String[]{"Recently used"};
+        ArrayAdapter<String> optionsAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, label);
         spinner.setEnabled(false);
         spinner.setClickable(false);
@@ -86,8 +84,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void update(String recentlyUsed) {
                 // Save the copied emoticon and update the grid adapter's data
-                saveToRecent(recentlyUsed);
-                updateTabContent();
+                if (getActivity() != null){
+                    saveToRecent(recentlyUsed);
+                    updateTabContent();
+                }
             }
         });
 
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment {
      */
     private void updateTabContent() {
         // Check if the preference for recently used emoticons is enabled
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean recentPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_RECENT, false);
         if (recentPref){ // Recently used emoticons enabled
             if (fileIsEmpty("recent.txt")){ // Show message to tell user that there are no recently used emoticons.
@@ -116,8 +116,8 @@ public class HomeFragment extends Fragment {
                 // Remove the label
                 spinner.setVisibility(View.GONE);
                 // Show the message
-                message = getResources().getString(R.string.no_recent_message);
-                editedMessage = new SpannableString(message);
+                String message = getResources().getString(R.string.no_recent_message);
+                SpannableString editedMessage = new SpannableString(message);
                 editedMessage.setSpan(new RelativeSizeSpan(1.2f), 0, 37, 0);
                 editedMessage.setSpan(new RelativeSizeSpan(2.5f), 39, 46, 0);
                 editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 49, 151, 0);
@@ -154,11 +154,16 @@ public class HomeFragment extends Fragment {
             // Remove the label
             spinner.setVisibility(View.GONE);
             // Show the starting screen message
-            message = getResources().getString(R.string.home_message);
-            editedMessage = new SpannableString(message);
+            String message;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                message = getResources().getString(R.string.home_message);
+            } else{
+                message = getResources().getString(R.string.home_message_cp);
+            }
+            SpannableString editedMessage = new SpannableString(message);
             editedMessage.setSpan(new RelativeSizeSpan(1.2f), 0, 39, 0);
             editedMessage.setSpan(new RelativeSizeSpan(2.5f), 41, 52, 0);
-            editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 55, 172, 0);
+            editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 55, 177, 0);
             textView.setText(editedMessage);
             textView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
@@ -172,12 +177,12 @@ public class HomeFragment extends Fragment {
     private void createGrid(View rootView) {
         gridView = (AutoGridView) rootView.findViewById(R.id.grid_recent);
         // Check if the preference for dark theme is enabled
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean bgDarkPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_BG_DARK, false);
         if (bgDarkPref){ // Dark theme enabled
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item, data);
         } else { // Dark theme disabled
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item_light, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item_light, data);
         }
         // Attach the adapter
         gridView.setAdapter(gridAdapter);
@@ -201,7 +206,7 @@ public class HomeFragment extends Fragment {
      */
     private boolean fileIsEmpty(String file) {
         try {
-            InputStream inputStream = getContext().openFileInput(file);
+            InputStream inputStream = getActivity().openFileInput(file);
             if (inputStream != null){
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -223,7 +228,7 @@ public class HomeFragment extends Fragment {
         String ls = System.getProperty("line.separator");
         try {
             // Open recent.txt for appending
-            OutputStreamWriter writer = new OutputStreamWriter(getContext().openFileOutput("recent.txt", Context.MODE_APPEND));
+            OutputStreamWriter writer = new OutputStreamWriter(getActivity().openFileOutput("recent.txt", Context.MODE_APPEND));
             // Necessary to maintain multi-line strings
             textToAdd = textToAdd.replaceAll("[\r\n]+", "ø");
             // Write to file
@@ -247,7 +252,7 @@ public class HomeFragment extends Fragment {
         String ls = System.getProperty("line.separator");
         try {
             // Open recent.txt for reading
-            InputStream inputStream = getContext().openFileInput("recent.txt");
+            InputStream inputStream = getActivity().openFileInput("recent.txt");
             if (inputStream != null){
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader reader = new BufferedReader(inputStreamReader);
@@ -284,7 +289,7 @@ public class HomeFragment extends Fragment {
     private void updateRecent() {
         String ls = System.getProperty("line.separator");
         try {
-            OutputStreamWriter writer = new OutputStreamWriter(getContext().openFileOutput("recent.txt", Context.MODE_PRIVATE));
+            OutputStreamWriter writer = new OutputStreamWriter(getActivity().openFileOutput("recent.txt", Context.MODE_PRIVATE));
             Collections.reverse(data);
             for (int i = 0; i < 12; i++){
                 writer.write(data.get(i) + ls);
@@ -315,7 +320,7 @@ public class HomeFragment extends Fragment {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             ViewHolder mainViewHolder = null;
             if (convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(getContext());
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
                 convertView = inflater.inflate(layout, parent, false);
                 ViewHolder viewHolder = new ViewHolder();
                 // Get the view's button
@@ -328,9 +333,9 @@ public class HomeFragment extends Fragment {
                         // Get the button text
                         String toCopy = button.getText().toString();
                         // Copy the text to the clipboard
-                        setClipboard(getContext(), toCopy);
+                        setClipboard(getActivity(), toCopy);
                         // Display a toast to the user to indicate the item that was copied
-                        Toast toast = Toast.makeText(getContext(), button.getText() +
+                        Toast toast = Toast.makeText(getActivity(), button.getText() +
                                 " \nhas been copied!", Toast.LENGTH_SHORT);
                         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                         if (tv != null) {
@@ -347,7 +352,7 @@ public class HomeFragment extends Fragment {
                         // Get the button text
                         selectedText = button.getText().toString();
                         // Check if the preference for disabling confirmations is enabled
-                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                         Boolean disableConfirmPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CONFIRMATION, false);
                         if (disableConfirmPref) { // Disable confirmation pref enabled
                             // Update the list of custom emoticons with the selected emoticon
@@ -365,7 +370,7 @@ public class HomeFragment extends Fragment {
             }
             mainViewHolder = (ViewHolder) convertView.getTag();
             // Check if the preference for centering emoticons is enabled
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Boolean centerPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CENTER, false);
             if (centerPref){ // Center pref enabled
                 mainViewHolder.button.setGravity(Gravity.CENTER); // Center the text
@@ -403,13 +408,13 @@ public class HomeFragment extends Fragment {
          * Opens the prompt to add the selected text to the custom list.
          */
         private void openAddCustomPrompt() {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
             final View promptView = inflater.inflate(R.layout.add_custom_prompt, null);
 
             TextView tv = (TextView) promptView.findViewById(R.id.add_custom_prompt_subheader);
             tv.setText(selectedText);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setView(promptView);
 
             // Add functionality to the OK button

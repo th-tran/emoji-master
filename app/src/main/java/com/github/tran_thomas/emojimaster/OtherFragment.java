@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -136,7 +137,7 @@ public class OtherFragment extends Fragment {
             @Override
             public void applyNewSettings() {
                 // Check if the preference for gridview is enabled
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
                 if (gridviewPref){ // Grid view enabled
                     int orientation = getResources().getConfiguration().orientation;
@@ -159,7 +160,7 @@ public class OtherFragment extends Fragment {
      * Called when the fragment is initialized.
      */
     private void applyCurrentSettings() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
         if (gridviewPref){
             int orientation = getResources().getConfiguration().orientation;
@@ -179,12 +180,12 @@ public class OtherFragment extends Fragment {
      */
     private void createGrid(View rootView) {
         gridView = (AutoGridView) rootView.findViewById(R.id.grid_other);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean bgDarkPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_BG_DARK, false);
         if (bgDarkPref){
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item, data);
         } else {
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item_light, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item_light, data);
         }
         gridView.setAdapter(gridAdapter);
     }
@@ -207,7 +208,11 @@ public class OtherFragment extends Fragment {
         Collections.addAll(data, dataToAdd);
     }
     private void generateHuggingListContent() {
-        dataToAdd = getResources().getStringArray(R.array.hugging);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.hugging);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.hugging_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
@@ -242,12 +247,20 @@ public class OtherFragment extends Fragment {
         Collections.addAll(data, dataToAdd);
     }
     private void generateFriendshipListContent() {
-        dataToAdd = getResources().getStringArray(R.array.friendship);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.friendship);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.friendship_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
     private void generateMusicListContent() {
-        dataToAdd = getResources().getStringArray(R.array.music);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.music);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.music_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
@@ -257,12 +270,20 @@ public class OtherFragment extends Fragment {
         Collections.addAll(data, dataToAdd);
     }
     private void generateMemeListContent() {
-        dataToAdd = getResources().getStringArray(R.array.memes);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.memes);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.memes_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
     private void generateAnimalListContent() {
-        dataToAdd = getResources().getStringArray(R.array.animals);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.animals);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.animals_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
@@ -282,7 +303,7 @@ public class OtherFragment extends Fragment {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             ViewHolder mainViewHolder = null;
             if (convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(getContext());
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
                 convertView = inflater.inflate(layout, parent, false);
                 ViewHolder viewHolder = new ViewHolder();
                 viewHolder.button = (Button) convertView.findViewById(R.id.grid_item);
@@ -291,11 +312,11 @@ public class OtherFragment extends Fragment {
                     public void onClick(View view) {
                         Button button = view.findViewById(R.id.grid_item);
                         String toCopy = button.getText().toString();
-                        setClipboard(getContext(), toCopy);
+                        setClipboard(getActivity(), toCopy);
                         if (MainActivity.getRecentUpdateListener() != null){
                             MainActivity.getRecentUpdateListener().update(toCopy);
                         }
-                        Toast toast = Toast.makeText(getContext(), button.getText() +
+                        Toast toast = Toast.makeText(getActivity(), button.getText() +
                                 " \nhas been copied!", Toast.LENGTH_SHORT);
                         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                         if (tv != null) {
@@ -309,7 +330,7 @@ public class OtherFragment extends Fragment {
                     public boolean onLongClick(View view) {
                         Button button = view.findViewById(R.id.grid_item);
                         selectedText = button.getText().toString();
-                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                         Boolean disableConfirmPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CONFIRMATION, false);
                         if (disableConfirmPref) {
                             if (MainActivity.getCustomUpdateListener() != null){
@@ -324,7 +345,7 @@ public class OtherFragment extends Fragment {
                 convertView.setTag(viewHolder);
             }
             mainViewHolder = (ViewHolder) convertView.getTag();
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Boolean centerPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CENTER, false);
             if (centerPref){
                 mainViewHolder.button.setGravity(Gravity.CENTER);
@@ -362,13 +383,13 @@ public class OtherFragment extends Fragment {
          * Opens the prompt to add the selected text to the custom list.
          */
         private void openAddCustomPrompt() {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
             final View promptView = inflater.inflate(R.layout.add_custom_prompt, null);
 
             TextView tv = (TextView) promptView.findViewById(R.id.add_custom_prompt_subheader);
             tv.setText(selectedText);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setView(promptView);
 
             // Add functionality to the OK button

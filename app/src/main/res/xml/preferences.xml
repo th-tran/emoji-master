@@ -50,11 +50,23 @@
             android:summary="@string/pref_custom_clear_summ" />
     </PreferenceCategory>
     <PreferenceCategory
+        android:title="@string/support_header"
+        android:key="pref_key_support_settings">
+        <Preference
+            android:key="pref_key_rating_link"
+            android:icon="@mipmap/ic_launcher"
+            android:title="@string/pref_rating_link"
+            android:summary="@string/pref_rating_link_summ">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=com.github.tran_thomas.emojimaster" />
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory
         android:title="@string/about_header"
         android:key="pref_key_about_settings">
         <Preference
             android:key="pref_key_version"
-            android:icon="@mipmap/ic_launcher"
             android:title="@string/pref_version"
             android:summary="@string/pref_version_summ" />
         <Preference

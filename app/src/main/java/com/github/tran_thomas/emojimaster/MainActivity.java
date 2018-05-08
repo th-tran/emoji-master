@@ -37,7 +37,7 @@ import java.io.OutputStreamWriter;
  * Fully self-developed :)
  *
  * Author: Thomas Tran
- * Last updated: May 3, 2018
+ * Last updated: May 8, 2018
  ***************************************************/
 public class MainActivity extends AppCompatActivity {
 

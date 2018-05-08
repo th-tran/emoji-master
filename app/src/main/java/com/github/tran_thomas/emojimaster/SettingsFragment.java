@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -58,6 +59,10 @@ public class SettingsFragment extends PreferenceFragment
                 return true;
             }
         });
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            Preference darkThemePref = (Preference) findPreference(SettingsActivity.KEY_PREF_BG_DARK);
+            darkThemePref.setSummary(getResources().getString(R.string.pref_background_dark_summ_cp));
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -59,7 +60,7 @@ public class FacesFragment extends Fragment {
                             "Indifference", "Confusion", "Doubt", "Surprise",
                             "Sadness", "Dissatisfaction", "Anger", "Pain", "Fear"};
         // Use an adapter to store the list of categories in the spinner
-        ArrayAdapter<String> optionsAdapter = new ArrayAdapter<>(getContext(),
+        ArrayAdapter<String> optionsAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, options);
         // Attach the adapter
         spinner.setAdapter(optionsAdapter);
@@ -135,7 +136,7 @@ public class FacesFragment extends Fragment {
             @Override
             public void applyNewSettings() {
                 // Check if the preference for grid view is enabled
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
                 if (gridviewPref){ // Grid view enabled
                     int orientation = getResources().getConfiguration().orientation;
@@ -158,7 +159,7 @@ public class FacesFragment extends Fragment {
      * Called when the fragment is initialized.
      */
     private void applyCurrentSettings() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
         if (gridviewPref){
             int orientation = getResources().getConfiguration().orientation;
@@ -178,12 +179,12 @@ public class FacesFragment extends Fragment {
      */
     private void createGrid(View rootView) {
         gridView = (AutoGridView) rootView.findViewById(R.id.grid_faces);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean bgDarkPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_BG_DARK, false);
         if (bgDarkPref){
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item, data);
         } else {
-            gridAdapter = new GridAdapter(getContext(), R.layout.grid_item_light, data);
+            gridAdapter = new GridAdapter(getActivity(), R.layout.grid_item_light, data);
         }
         gridView.setAdapter(gridAdapter);
     }
@@ -201,17 +202,29 @@ public class FacesFragment extends Fragment {
 
     // Functions to update the adapter's data based on the selected category
     private void generateJoyListContent() {
-        dataToAdd = getResources().getStringArray(R.array.joy);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.joy);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.joy_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
     private void generateLoveListContent() {
-        dataToAdd = getResources().getStringArray(R.array.love);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.love);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.love_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
     private void generateEmbarrassmentListContent() {
-        dataToAdd = getResources().getStringArray(R.array.embarrassment);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.embarrassment);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.embarrassment_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
@@ -221,7 +234,11 @@ public class FacesFragment extends Fragment {
         Collections.addAll(data, dataToAdd);
     }
     private void generateIndifferenceListContent() {
-        dataToAdd = getResources().getStringArray(R.array.indifference);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            dataToAdd = getResources().getStringArray(R.array.indifference);
+        } else{
+            dataToAdd = getResources().getStringArray(R.array.indifference_cp);
+        }
         data.clear();
         Collections.addAll(data, dataToAdd);
     }
@@ -281,7 +298,7 @@ public class FacesFragment extends Fragment {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             ViewHolder mainViewHolder = null;
             if (convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(getContext());
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
                 convertView = inflater.inflate(layout, parent, false);
                 ViewHolder viewHolder = new ViewHolder();
                 // Get the view's button
@@ -294,13 +311,13 @@ public class FacesFragment extends Fragment {
                         // Get the button text
                         String toCopy = button.getText().toString();
                         // Copy the text to the clipboard
-                        setClipboard(getContext(), toCopy);
+                        setClipboard(getActivity(), toCopy);
                         // Update the list of recently used emoticons
                         if (MainActivity.getRecentUpdateListener() != null){
                             MainActivity.getRecentUpdateListener().update(toCopy);
                         }
                         // Display a toast to the user to indicate the item that was copied
-                        Toast toast = Toast.makeText(getContext(), button.getText() +
+                        Toast toast = Toast.makeText(getActivity(), button.getText() +
                                 " \nhas been copied!", Toast.LENGTH_SHORT);
                         TextView tv = (TextView) toast.getView().findViewById(android.R.id.message);
                         if (tv != null) {
@@ -317,7 +334,7 @@ public class FacesFragment extends Fragment {
                         // Get the button text
                         selectedText = button.getText().toString();
                         // Check if the preference for disabling confirmations is enabled
-                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
                         Boolean disableConfirmPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CONFIRMATION, false);
                         if (disableConfirmPref) { // Disable confirmation pref enabled
                             // Update the list of custom emoticons with the selected emoticon
@@ -335,7 +352,7 @@ public class FacesFragment extends Fragment {
             }
             mainViewHolder = (ViewHolder) convertView.getTag();
             // Check if the preference for centering emoticons is enabled
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Boolean centerPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_CENTER, false);
             if (centerPref){ // Center pref enabled
                 mainViewHolder.button.setGravity(Gravity.CENTER); // Center the text
@@ -373,13 +390,13 @@ public class FacesFragment extends Fragment {
          * Opens the prompt to add the selected text to the custom list.
          */
         private void openAddCustomPrompt() {
-            LayoutInflater inflater = LayoutInflater.from(getContext());
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
             final View promptView = inflater.inflate(R.layout.add_custom_prompt, null);
 
             TextView tv = (TextView) promptView.findViewById(R.id.add_custom_prompt_subheader);
             tv.setText(selectedText);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setView(promptView);
 
             // Add functionality to the OK button

@@ -46,8 +46,6 @@ public class CustomFragment extends Fragment{
     // Local variables
     private ArrayList<String> data = new ArrayList<>();
     private GridAdapter gridAdapter;
-    private String message;
-    private SpannableString editedMessage;
     private String selectedText;
     private int selectedTextPosn;
     private AutoGridView gridView;
@@ -73,52 +71,28 @@ public class CustomFragment extends Fragment{
         // Get the text view used to display a message to the user
         tv = (TextView) rootView.findViewById(R.id.custom_textview);
         // Initialize the message
-        message = getResources().getString(R.string.no_custom_message);
-        editedMessage = new SpannableString(message);
+        String message = getResources().getString(R.string.no_custom_message);
+        SpannableString editedMessage = new SpannableString(message);
         editedMessage.setSpan(new RelativeSizeSpan(1.2f), 0, 38, 0);
         editedMessage.setSpan(new RelativeSizeSpan(1.8f), 40, 57, 0);
         editedMessage.setSpan(new ForegroundColorSpan(Color.GRAY), 60, 171, 0);
         tv.setText(editedMessage);
-        // Show the message if there are no custom emoticons
-        if (fileIsEmpty("custom.txt")){ // No custom emoticons
-            tv.setVisibility(View.VISIBLE);
-            gridView.setVisibility(View.GONE);
-        } else { // There are custom emoticons
-            tv.setVisibility(View.GONE);
-            gridView.setVisibility(View.VISIBLE);
-            readFile("custom.txt");
-            updateGrid(rootView);
-        }
+        // Show message if file is empty
+        checkFileContents();
         // Show tab contents based on current settings
         applyCurrentSettings();
         // Set the listener to update the list of custom emoticons
         ((MainActivity)getActivity()).setCustomUpdateListener(new MainActivity.CustomUpdateListener() {
             @Override
             public void update(String toAdd) {
-                // Save the custom emoticon and update the grid adapter's data
-                saveToFile(toAdd);
-                readFile("custom.txt");
-                if (fileIsEmpty("custom.txt")){
-                    tv.setVisibility(View.VISIBLE);
-                    gridView.setVisibility(View.GONE);
-                } else{
-                    tv.setVisibility(View.GONE);
-                    gridView.setVisibility(View.VISIBLE);
-                }
-                // Check if the preference for grid view is enabled
                 if (getActivity() != null){
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
-                    if (gridviewPref){ // Grid view enabled
-                        int orientation = getResources().getConfiguration().orientation;
-                        if (orientation == Configuration.ORIENTATION_PORTRAIT){ // Portrait: set columns to 2
-                            gridView.setNumColumns(2);
-                        } else { // Landscape: set columns to 3
-                            gridView.setNumColumns(3);
-                        }
-                    } else { // Grid view disabled
-                        gridView.setNumColumns(1);
-                    }
+                    // Save the custom emoticon and update the grid adapter's data
+                    saveToFile(toAdd);
+                    readFile("custom.txt");
+                    // Update grid view if necessary
+                    applyCurrentSettings();
+                    checkFileContents();
+                    // Update grid content
                     updateGrid(rootView);
                 }
             }
@@ -127,28 +101,11 @@ public class CustomFragment extends Fragment{
         ((MainActivity)getActivity()).setCustomSettingsListener(new MainActivity.CustomSettingsListener() {
             @Override
             public void applyNewSettings() {
-                // Check if the preference for grid view is enabled
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
-                if (gridviewPref){ // Grid view enabled
-                    int orientation = getResources().getConfiguration().orientation;
-                    if (orientation == Configuration.ORIENTATION_PORTRAIT){ // Portrait: set columns to 2
-                        gridView.setNumColumns(2);
-                    } else { // Landscape: set columns to 3
-                        gridView.setNumColumns(3);
-                    }
-                } else { // Grid view disabled
-                    gridView.setNumColumns(1);
-                }
-                if (fileIsEmpty("custom.txt")){
-                    tv.setVisibility(View.VISIBLE);
-                    gridView.setVisibility(View.GONE);
-                    data.clear();
-                } else{
-                    tv.setVisibility(View.GONE);
-                    gridView.setVisibility(View.VISIBLE);
-                    readFile("custom.txt");
-                }
+                // Update grid view if necessary
+                applyCurrentSettings();
+                // Check if file is empty
+                checkFileContents();
+                // Update grid content
                 updateGrid(rootView);
             }
         });
@@ -189,8 +146,7 @@ public class CustomFragment extends Fragment{
                 if (disableConfirmPref) {
                     deleteFromFile("custom.txt");
                     readFile("custom.txt");
-                    createGrid(rootView);
-                    TextView tv = (TextView) rootView.findViewById(R.id.custom_textview);
+                    updateGrid(rootView);
                     if (fileIsEmpty("custom.txt")){
                         tv.setVisibility(View.VISIBLE);
                         gridView.setVisibility(View.GONE);
@@ -215,15 +171,30 @@ public class CustomFragment extends Fragment{
     private void applyCurrentSettings() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Boolean gridviewPref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_GRIDVIEW, false);
-        if (gridviewPref){
+        if (gridviewPref){ // Grid view enabled
             int orientation = getResources().getConfiguration().orientation;
-            if (orientation == Configuration.ORIENTATION_PORTRAIT){
+            if (orientation == Configuration.ORIENTATION_PORTRAIT){ // Portrait: set columns to 2
                 gridView.setNumColumns(2);
-            } else {
+            } else { // Landscape: set columns to 3
                 gridView.setNumColumns(3);
             }
-        } else {
+        } else { // Grid view disabled
             gridView.setNumColumns(1);
+        }
+    }
+
+    /**
+     * Checks if the file is empty and updates views accordingly
+     */
+    private void checkFileContents() {
+        if (fileIsEmpty("custom.txt")){
+            tv.setVisibility(View.VISIBLE);
+            gridView.setVisibility(View.GONE);
+            data.clear();
+        } else{
+            tv.setVisibility(View.GONE);
+            gridView.setVisibility(View.VISIBLE);
+            readFile("custom.txt");
         }
     }
 
@@ -246,7 +217,7 @@ public class CustomFragment extends Fragment{
                         String editedText = userInput.getText().toString();
                         editFile("custom.txt", editedText);
                         readFile("custom.txt");
-                        createGrid(rootView);
+                        updateGrid(rootView);
                     }
                 });
 
@@ -281,7 +252,7 @@ public class CustomFragment extends Fragment{
                     public void onClick(DialogInterface dialog, int id) {
                         deleteFromFile("custom.txt");
                         readFile("custom.txt");
-                        createGrid(rootView);
+                        updateGrid(rootView);
                         TextView tv = (TextView) rootView.findViewById(R.id.custom_textview);
                         if (fileIsEmpty("custom.txt")){
                             tv.setVisibility(View.VISIBLE);
