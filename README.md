@@ -7,6 +7,7 @@ ttran14@uoguelph.ca
 UPDATE: May 10th
 
 This app is now available on Google Play!
+
 https://play.google.com/store/apps/details?id=com.github.tran_thomas.emojimaster
 ********************************************************************************
 
