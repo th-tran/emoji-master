@@ -3,7 +3,14 @@ Thomas Tran
 ttran14@uoguelph.ca
 **************************************************
 
-*************************************************************************
+********************************************************************************
+UPDATE: May 10th
+
+This app is now available on Google Play!
+https://play.google.com/store/apps/details?id=com.github.tran_thomas.emojimaster
+********************************************************************************
+
+************************************************************************
 App Overview
 
 The app stores various emoticons composed of 
@@ -42,11 +49,7 @@ to show a list of your most recently used emoticons on the home tab!
 *********************************************************************************************
 TODO
 
-(I am currently in the process of publishing this app! It should be on Google Play very soon)
-
 - Enable developer/debugging settings by tapping the version code 7 times
 - Add additional app themes
 - Implement notification support
-- Prepare the app for release (i.e. create promotional material, app icon, sign the app)
-- Release the app to the Google Play store! :D
 ***********************************************************************************************
